@@ -50,37 +50,38 @@ int main()
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
 	//顶点坐标
-	float vertices[] = {
-		 0.5f,  0.5f, 0.0f,  // top right
-		 0.5f, -0.5f, 0.0f,  // bottom right
-		-0.5f, -0.5f, 0.0f,  // bottom left
-		-0.5f,  0.5f, 0.0f   // top left
+	float firstTriangle[] = {
+		-0.9f, -0.5f, 0.0f,  // left
+		-0.0f, -0.5f, 0.0f,  // right
+		-0.45f, 0.5f, 0.0f,  // top
 	};
-	unsigned int indices[] = {  // note that we start from 0!
-		0, 1, 3,   // first triangle
-		1, 2, 3    // second triangle
+	float secondTriangle[] = {
+		0.0f, -0.5f, 0.0f,  // left
+		0.9f, -0.5f, 0.0f,  // right
+		0.45f, 0.5f, 0.0f   // top
 	};
 
 	//创建VAO
-	unsigned int VAO;
-	glGenVertexArrays(1, &VAO);
+	unsigned int VAO[2];
+	glGenVertexArrays(2, VAO);
 	//VAO要在VBO绑定之前绑定
-	glBindVertexArray(VAO);
+	glBindVertexArray(VAO[0]);
 
 	//创建VBO
-	unsigned int VBO;
-	glGenBuffers(1, &VBO);
+	unsigned int VBO[2];
+	glGenBuffers(2, VBO);
 
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(firstTriangle), firstTriangle, GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);	// Vertex attributes stay the same
+	glEnableVertexAttribArray(0);
 
-	//创建EBO
-	unsigned int EBO;
-	glGenBuffers(1, &EBO);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
+	glBindVertexArray(VAO[1]);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(secondTriangle), secondTriangle, GL_STATIC_DRAW);
+	//因为顶点数据紧紧挨在一起，所以直接写0也可以
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);	// Vertex attributes stay the same
+	glEnableVertexAttribArray(0);
 	//创建vertexShader
 	unsigned int vertexShader;
 	vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -146,8 +147,11 @@ int main()
 
 		//绑定shader VAO 绘制
 		glUseProgram(shaderProgram);
-		glBindVertexArray(VAO);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glBindVertexArray(VAO[0]);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+		// then we draw the second triangle using the data from the second VAO
+		glBindVertexArray(VAO[1]);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
 
 		//交换缓冲区
 		glfwSwapBuffers(window);
