@@ -158,6 +158,10 @@
     <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="color.frag" />
+    <None Include="color.vert" />
+    <None Include="light_cube.frag" />
+    <None Include="light_cube.vert" />
     <None Include="shader.frag" />
     <None Include="shader.vert" />
   </ItemGroup>

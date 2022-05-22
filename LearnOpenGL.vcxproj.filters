@@ -46,5 +46,17 @@
     <None Include="shader.vert">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="color.vert">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="color.frag">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="light_cube.vert">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="light_cube.frag">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
 </Project>
